@@ -1,0 +1,11 @@
+ext.versions = [
+        supportAppCompat    : "26.0.0",
+        speechkit : "2.5.0",
+        timber    : "4.5.1"
+]
+
+ext.libraries = [
+        supportAppCompat : "com.android.support:appcompat-v7:$versions.supportAppCompat",
+        speechkit   : "com.yandex.android:speechkit:$versions.speechkit",
+        timber  :   "com.jakewharton.timber:timber:$versions.timber"
+]
