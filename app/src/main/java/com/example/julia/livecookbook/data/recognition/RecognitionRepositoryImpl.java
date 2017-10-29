@@ -1,5 +1,7 @@
 package com.example.julia.livecookbook.data.recognition;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognition;
 import ru.yandex.speechkit.Recognizer;
@@ -13,20 +15,21 @@ import timber.log.Timber;
  * Created by julia on 27.10.17.
  */
 
-public class RecognitionRepositoryImpl  implements RecognitionRepository, RecognizerListener, VocalizerListener {
+public class RecognitionRepositoryImpl implements RecognitionRepository, RecognizerListener, VocalizerListener {
 
     private Recognizer recognizer;
     private Vocalizer vocalizer;
+    private PublishSubject<String> partialRecognozedString;
 
-    private RecognitionRepoListener listener;
-
-    public RecognitionRepositoryImpl(RecognitionRepoListener listener) {
-        this.listener = listener;
+    @Override
+    public Observable<String> observePartialRecognition() {
+        return partialRecognozedString;
     }
 
     @Override
     public void startRecognitionRequest() {
         recognizer = Recognizer.create(Recognizer.Language.RUSSIAN, Recognizer.Model.NOTES, this);
+        partialRecognozedString = PublishSubject.create();
         try {
             recognizer.start();
         } catch (SecurityException e) {
@@ -45,7 +48,7 @@ public class RecognitionRepositoryImpl  implements RecognitionRepository, Recogn
     @Override
     public void onRecordingBegin(Recognizer recognizer) {
         Timber.d("onRecordingBegin");
-        listener.onStartRecord();
+
     }
 
     @Override
@@ -61,7 +64,7 @@ public class RecognitionRepositoryImpl  implements RecognitionRepository, Recogn
     @Override
     public void onRecordingDone(Recognizer recognizer) {
         Timber.d("onRecordingDone");
-        listener.onStopRecognition();
+
     }
 
     @Override
@@ -76,20 +79,26 @@ public class RecognitionRepositoryImpl  implements RecognitionRepository, Recogn
 
     @Override
     public void onPartialResults(Recognizer recognizer, Recognition recognition, boolean b) {
-        listener.onPartialResult(recognition.getBestResultText());
+
+        partialRecognozedString.onNext(recognition.getBestResultText());
+
         Timber.d("onPartialResults " + recognition.getBestResultText());
     }
 
     @Override
     public void onRecognitionDone(Recognizer recognizer, Recognition recognition) {
         Timber.d("onRecognitionDone");
-        listener.onStopRecognition();
+
+        partialRecognozedString.onComplete();
+
     }
 
     @Override
     public void onError(Recognizer recognizer, Error error) {
         Timber.d("onError " + error.getString());
-        listener.onError(error.getString());
+
+        partialRecognozedString.onError(new Throwable(error.getString()));
+
     }
 
     @Override
@@ -115,12 +124,5 @@ public class RecognitionRepositoryImpl  implements RecognitionRepository, Recogn
     @Override
     public void onVocalizerError(Vocalizer vocalizer, Error error) {
         Timber.d("onError " + error.getString());
-    }
-
-    public interface RecognitionRepoListener {
-        void onStartRecord();
-        void onPartialResult(String text);
-        void onStopRecognition();
-        void onError(String error);
     }
 }

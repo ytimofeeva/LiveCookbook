@@ -1,56 +1,83 @@
 package com.example.julia.livecookbook.ui;
 
-import com.example.julia.livecookbook.data.recognition.RecognitionRepository;
-import com.example.julia.livecookbook.data.recognition.RecognitionRepositoryImpl;
+import android.support.annotation.NonNull;
 
+import com.example.julia.livecookbook.CookbookApplication;
+import com.example.julia.livecookbook.data.recognition.RecognitionRepository;
+import com.example.julia.livecookbook.data.storage.receipe.ReceipeRepository;
+import com.example.julia.livecookbook.domain.ReceipeRecognitionInteractor;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
  * Created by julia on 27.10.17.
  */
 
-public class MainPresenter implements RecognitionRepositoryImpl.RecognitionRepoListener {
+public class MainPresenter {
 
     private RecognitionRepository repository;
+    private ReceipeRecognitionInteractor receipeRecognitionInteractor;
     private MainView view;
+    private CompositeDisposable observableContainer;
 
     public MainPresenter() {
-        this.repository = new RecognitionRepositoryImpl(this);
+        this.repository = CookbookApplication.getInstance().getFactoryProvider().
+                getRepositoryFactory()
+                .getRecognitionRepository();
+        ReceipeRepository receipeRepository = CookbookApplication.getInstance().getFactoryProvider()
+                .getRepositoryFactory()
+                .getReceipeRepository();
+        this.receipeRecognitionInteractor = CookbookApplication.getInstance().getFactoryProvider()
+                .getInteractorFactory().getRecognitionInteractor(this.repository, receipeRepository);
+        observableContainer = new CompositeDisposable();
     }
 
-    public void attachView(MainView view) {
+    public void attachView(@NonNull MainView view) {
         this.view = view;
+        observableContainer.add(receipeRecognitionInteractor.getCurrentSteps()
+                .subscribe(data -> {
+                    view.showPreviousSteps(data);
+                }, Timber::e));
     }
 
     public void detachView() {
         this.view = null;
+        observableContainer.clear();
     }
 
     public void startRecognition() {
-        repository.startRecognitionRequest();
+        receipeRecognitionInteractor.newRecognitionRequest();
+        receipeRecognitionInteractor.getCurrentRecognition()
+                .subscribe(message -> {
+                    if (view != null) {
+                        view.onPartialResult(message);
+                    }
+                }, Timber::e);
     }
 
     public void startVocalization() {
         repository.startVocalizationRequest("Это я с кем разговариваю?");
     }
 
-    @Override
-    public void onStartRecord() {
-        view.onStartRecordAudio();
+    public void nextStep() {
+        receipeRecognitionInteractor.nextStep();
     }
 
-    @Override
-    public void onPartialResult(String text) {
-        view.onPartialResult(text);
+    public void saveReceipe() {
+        receipeRecognitionInteractor.saveReceipe()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                            if (view != null)
+                                view.showMessage("Save OK");
+                        },
+                        error -> {
+                            if (view != null)
+                                view.showMessage(error.getLocalizedMessage());
+                        });
     }
 
-    @Override
-    public void onStopRecognition() {
-        view.onStopRecognition();
-    }
-
-    @Override
-    public void onError(String error) {
-        Timber.e(error);
-    }
 }

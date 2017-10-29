@@ -23,6 +23,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:text="PLAY"/>
+    <Button
+        android:id="@+id/step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/start"
+        android:text="STEP"/>
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/step"
+        android:text="SAVE"/>
 
 
     <ImageView
@@ -35,11 +49,19 @@
         app:layout_constraintTop_toBottomOf="@+id/start"/>
 
     <TextView
+        android:id="@+id/tv_prev_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_start_record"
+        />
+    <TextView
         android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_start_record"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_prev_steps"/>
 
 </android.support.constraint.ConstraintLayout>
