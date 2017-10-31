@@ -2,6 +2,8 @@ package com.example.julia.livecookbook.data.storage.receipe;
 
 import com.example.julia.livecookbook.data.storage.entities.ReceipeDB;
 
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -13,5 +15,6 @@ public interface ReceipeRepository {
 
     Completable saveReceipe(ReceipeDB receipe);
     Single<ReceipeDB> getReceipe(String name);
+    Single<List<ReceipeDB>> getAllReceipes();
 
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="receipe_name_hint">Название</string>
+
+    <string name="empty_view_receipes_in_db">Нет сохранённых рецептов</string>
+</resources>

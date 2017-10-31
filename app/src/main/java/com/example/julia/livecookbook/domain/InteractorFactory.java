@@ -11,6 +11,8 @@ public class InteractorFactory {
 
     private ReceipeRecognitionInteractor recognitionInteractor;
 
+    private ReceipeVocalizationInteractor vocalizationInteractor;
+
     public static InteractorFactory getInstance() {
         return new InteractorFactory();
     }
@@ -22,5 +24,15 @@ public class InteractorFactory {
         }
         return recognitionInteractor;
     }
+
+    public synchronized ReceipeVocalizationInteractor getVocalizationInteractor(RecognitionRepository recognitionRepository,
+                                                                                ReceipeRepository receipeRepository) {
+        if (vocalizationInteractor == null) {
+            vocalizationInteractor = new ReceipeVocalizationInteractorImpl(recognitionRepository, receipeRepository);
+        }
+        return vocalizationInteractor;
+    }
+
+
 
 }

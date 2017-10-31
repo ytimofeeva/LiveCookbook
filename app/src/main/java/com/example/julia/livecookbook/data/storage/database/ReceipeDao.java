@@ -27,5 +27,11 @@ public interface ReceipeDao {
     @Query("SELECT * FROM ReceipeStepDB WHERE receipId LIKE :id")
     List<ReceipeStepDB> getAllStepsForReceipeId(int id);
 
+    @Query("SELECT * FROM ReceipeHeaderDB WHERE name LIKE :name LIMIT 1")
+    ReceipeHeaderDB getReceipHeader(String name);
+
+    @Query("SELECT * FROM ReceipeHeaderDB")
+    List<ReceipeHeaderDB> getAllReceipeHeaders();
+
 
 }

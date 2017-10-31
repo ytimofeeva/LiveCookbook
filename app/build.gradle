@@ -29,7 +29,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile libraries.supportAppCompat
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile libraries.speechkit
     compile libraries.timber
     compile libraries.rxjava
@@ -37,6 +36,10 @@ dependencies {
     compile libraries.room
     annotationProcessor libraries.roomCompiler
     compile libraries.roomRx
+    compile libraries.recyclerView
+    compile libraries.cardView
     compile libraries.stetho
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:26.+'
     testCompile 'junit:junit:4.12'
 }

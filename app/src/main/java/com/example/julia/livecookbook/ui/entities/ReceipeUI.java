@@ -14,9 +14,9 @@ public class ReceipeUI {
     private String name;
     private String imageUri;
 
-    private List<String> steps;
+    private List<StepUI> steps;
 
-    public ReceipeUI(@NonNull String name, @Nullable String imageUri, @NonNull List<String> steps) {
+    public ReceipeUI(@NonNull String name, @Nullable String imageUri, @NonNull List<StepUI> steps) {
         this.name = name;
         this.imageUri = imageUri;
         this.steps = steps;
@@ -30,7 +30,7 @@ public class ReceipeUI {
         return imageUri;
     }
 
-    public List<String> getSteps() {
+    public List<StepUI> getSteps() {
         return steps;
     }
 }

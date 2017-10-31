@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 
 public interface ReceipeRecognitionInteractor  {
 
-    Completable saveReceipe();
+    Completable saveReceipe(String name);
 
     void newReceipe();
     void nextStep();
